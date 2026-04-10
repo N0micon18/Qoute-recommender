@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Quote Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background">
+    <div class="card" id="quote-card">
+      <div class="spinner hidden" id="spinner" aria-label="Loading"></div>
+
+      <div class="error hidden" id="error-box" role="alert">
+        <p id="error-message">Failed to load quote.</p>
+        <button id="retry-btn" type="button">Try Again</button>
+      </div>
+
+      <div class="quote-content hidden" id="quote-content">
+        <span class="decorative-quote">"</span>
+        <p class="quote-text" id="quote-text"></p>
+        <p class="quote-author" id="quote-author"></p>
+      </div>
+
+      <div class="buttons hidden" id="buttons">
+        <button id="new-quote-btn" type="button">🔄 New Quote</button>
+        <button id="copy-btn" type="button">📋 Copy</button>
+        <button id="download-btn" type="button">⬇️ Download</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
