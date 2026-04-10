@@ -28,6 +28,14 @@ body {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
+.app-title {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .quote-content {
   text-align: center;
   opacity: 1;
