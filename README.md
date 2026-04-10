@@ -22,7 +22,7 @@ A polished random quote website built with pure HTML, CSS, and Vanilla JavaScrip
 ## Run
 
 1. Open `index.html` directly in a browser.
-2. Or run a local server:
+2. Or run a local server:c
 
 ```bash
 python -m http.server 8080
