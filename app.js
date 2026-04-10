@@ -2,6 +2,12 @@ const QUOTE_APIS = [
   "https://api.quotable.io/random",
   "https://dummyjson.com/quotes/random",
 ];
+const REQUEST_TIMEOUT_MS = 8000;
+const LOCAL_FALLBACK_QUOTES = [
+  { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+  { text: "Great things are done by a series of small things brought together.", author: "Vincent van Gogh" },
+  { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+];
 
 let currentQuote = { text: "", author: "" };
 let copyResetTimerId = null;
@@ -26,10 +32,10 @@ async function fetchQuote() {
 
   try {
     currentQuote = await getQuoteFromAvailableApi();
-
     displayQuote();
   } catch (error) {
-    showError("Failed to load quote. Please try again.");
+    currentQuote = getLocalFallbackQuote();
+    displayQuote();
   } finally {
     spinner.classList.add("hidden");
   }
@@ -38,7 +44,7 @@ async function fetchQuote() {
 async function getQuoteFromAvailableApi() {
   for (const apiUrl of QUOTE_APIS) {
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetchWithTimeout(apiUrl, REQUEST_TIMEOUT_MS);
       if (!response.ok) {
         continue;
       }
@@ -63,6 +69,22 @@ async function getQuoteFromAvailableApi() {
   }
 
   throw new Error("No quote API available");
+}
+
+async function fetchWithTimeout(url, timeoutMs) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+function getLocalFallbackQuote() {
+  const index = Math.floor(Math.random() * LOCAL_FALLBACK_QUOTES.length);
+  return LOCAL_FALLBACK_QUOTES[index];
 }
 
 function displayQuote() {
@@ -100,7 +122,7 @@ function showError(message) {
 async function copyQuote() {
   const textToCopy = `"${currentQuote.text}" — ${currentQuote.author}`;
   try {
-    await navigator.clipboard.writeText(textToCopy);
+    await copyToClipboard(textToCopy);
     copyBtn.innerText = "Copied! ✓";
     copyBtn.classList.add("copied");
   } catch (error) {
@@ -117,6 +139,29 @@ async function copyQuote() {
     copyBtn.classList.remove("copied");
     copyResetTimerId = null;
   }, 2000);
+}
+
+async function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "fixed";
+  textArea.style.opacity = "0";
+  document.body.appendChild(textArea);
+  textArea.select();
+  textArea.setSelectionRange(0, textArea.value.length);
+
+  const success = document.execCommand("copy");
+  textArea.remove();
+
+  if (!success) {
+    throw new Error("Clipboard copy not supported");
+  }
 }
 
 function downloadQuote() {

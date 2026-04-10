@@ -4,10 +4,10 @@ A polished random quote website built with pure HTML, CSS, and Vanilla JavaScrip
 
 ## Features
 
-- Fetches a fresh quote and author from `https://api.quotable.io/random` with automatic fallback if unavailable
+- Fetches a fresh quote and author from `https://api.quotable.io/random` with automatic API/local fallback if unavailable
 - Loads a new quote on page load and on **New Quote**
 - Smooth fade transition when the quote updates
-- Copy the current quote to clipboard with visual **Copied! ✓** feedback
+- Copy the current quote to clipboard with visual **Copied! ✓** feedback (secure and non-secure context support)
 - Download the current quote as `quote.txt`
 - Loading spinner while quotes are fetched
 - Friendly error message with a **Try Again** action if API requests fail
